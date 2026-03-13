@@ -225,7 +225,7 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.height(28.dp))
 
-
+// dirigir al login
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically

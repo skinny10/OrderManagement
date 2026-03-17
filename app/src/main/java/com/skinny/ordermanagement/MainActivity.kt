@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import com.skinny.ordermanagement.features.auth.register.presentation.screens.RegisterScreen
+import com.skinny.ordermanagement.core.navigation.AppNavigation
 import com.skinny.ordermanagement.ui.theme.OrderManagementTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -23,14 +23,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    RegisterScreen(
-                        onRegisterSuccess = {
-                            // 👈 Aquí navegarás al Home cuando esté listo
-                        },
-                        onNavigateToLogin = {
-                            // 👈 Aquí navegarás al Login
-                        }
-                    )
+                    AppNavigation()
                 }
             }
         }

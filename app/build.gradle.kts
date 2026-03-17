@@ -74,6 +74,9 @@ dependencies {
     // Material Icons Extended
     implementation(libs.material.icons.extended)
 
+    // Navigation
+    implementation(libs.navigation.compose)
+
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -82,4 +85,5 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+
 }

@@ -15,24 +15,9 @@ fun NavGraph(navController: NavHostController) {
         startDestination = AppRoutes.Auth.Login.route
     ) {
 
-        // 👇 Login
         composable(route = AppRoutes.Auth.Login.route) {
             LoginScreen(
                 onLoginSuccess = { role ->
-                    val destination = when (role) {
-                        "admin"    -> AppRoutes.Admin.Home.route
-                        "seller"   -> AppRoutes.Seller.Home.route
-                        "delivery" -> AppRoutes.Delivery.Home.route
-                        else       -> null
-                    }
-                    destination?.let {
-                        navController.navigate(it) {
-                            // 👇 Limpia backstack — no puede volver al Login
-                            popUpTo(AppRoutes.Auth.Login.route) {
-                                inclusive = true
-                            }
-                        }
-                    }
                 },
                 onNavigateToRegister = {
                     navController.navigate(AppRoutes.Auth.Register.route)
@@ -40,7 +25,6 @@ fun NavGraph(navController: NavHostController) {
             )
         }
 
-        // 👇 Register
         composable(route = AppRoutes.Auth.Register.route) {
             RegisterScreen(
                 onRegisterSuccess = {
@@ -54,19 +38,6 @@ fun NavGraph(navController: NavHostController) {
                     navController.popBackStack()
                 }
             )
-        }
-
-        // 👇 Vistas por rol — pantallas temporales hasta tener las reales
-        composable(route = AppRoutes.Admin.Home.route) {
-            // TODO: Reemplazar con AdminHomeScreen()
-        }
-
-        composable(route = AppRoutes.Seller.Home.route) {
-            // TODO: Reemplazar con SellerHomeScreen()
-        }
-
-        composable(route = AppRoutes.Delivery.Home.route) {
-            // TODO: Reemplazar con DeliveryHomeScreen()
         }
     }
 }

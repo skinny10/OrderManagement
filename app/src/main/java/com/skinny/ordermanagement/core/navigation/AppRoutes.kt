@@ -6,16 +6,4 @@ sealed class AppRoutes(val route: String) {
         object Login    : Auth("auth/login")
         object Register : Auth("auth/register")
     }
-
-    sealed class Admin(route: String) : AppRoutes(route) {
-        object Home : Admin("admin/home")
-    }
-
-    sealed class Seller(route: String) : AppRoutes(route) {
-        object Home : Seller("seller/home")
-    }
-
-    sealed class Delivery(route: String) : AppRoutes(route) {
-        object Home : Delivery("delivery/home")
-    }
 }

@@ -5,11 +5,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Surface
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
 import com.skinny.ordermanagement.ui.theme.OrderManagementTheme
-import com.skinny.ordermanagement.features.auth.register.presentation.screens.RegisterScreen
+//import com.skinny.ordermanagement.navigation.SellerNavGraph
+// import com.skinny.ordermanagement.navigation.DeliveryNavGraph
+ import com.skinny.ordermanagement.navigation.AdminNavGraph
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -19,14 +22,17 @@ class MainActivity : ComponentActivity() {
         setContent {
             OrderManagementTheme {
                 Surface(
-                    modifier = androidx.compose.ui.Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    RegisterScreen(
-                        onRegisterSuccess = {
 
-                        }
-                    )
+                    //SellerNavGraph(onLogout = {})
+
+
+                    // DeliveryNavGraph(onLogout = {})
+
+
+                     AdminNavGraph(onLogout = {})
                 }
             }
         }

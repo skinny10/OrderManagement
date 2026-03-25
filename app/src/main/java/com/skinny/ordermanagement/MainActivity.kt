@@ -10,9 +10,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
 import com.skinny.ordermanagement.ui.theme.OrderManagementTheme
-//import com.skinny.ordermanagement.navigation.SellerNavGraph
+import com.skinny.ordermanagement.navigation.SellerNavGraph
 // import com.skinny.ordermanagement.navigation.DeliveryNavGraph
- import com.skinny.ordermanagement.navigation.AdminNavGraph
+// import com.skinny.ordermanagement.navigation.AdminNavGraph
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -25,14 +25,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-
-                    //SellerNavGraph(onLogout = {})
-
-
-                    // DeliveryNavGraph(onLogout = {})
-
-
-                     AdminNavGraph(onLogout = {})
+                    SellerNavGraph(onLogout = {})
                 }
             }
         }

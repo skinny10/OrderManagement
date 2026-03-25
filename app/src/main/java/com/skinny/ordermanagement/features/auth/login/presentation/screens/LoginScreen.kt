@@ -1,4 +1,4 @@
-package com.skinny.ordermanagement.features.auth.register.presentation.screens
+package com.skinny.ordermanagement.features.auth.login.presentation.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,7 +17,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Snackbar
@@ -41,27 +41,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.skinny.ordermanagement.features.auth.register.presentation.components.RegisterTextField
-import com.skinny.ordermanagement.features.auth.register.presentation.viewmodels.RegisterUiState
-import com.skinny.ordermanagement.features.auth.register.presentation.viewmodels.RegisterViewModel
+import com.skinny.ordermanagement.features.auth.login.presentation.components.LoginTextField
+import com.skinny.ordermanagement.features.auth.login.presentation.viewmodels.LoginUiState
+import com.skinny.ordermanagement.features.auth.login.presentation.viewmodels.LoginViewModel
 
-// 🎨 Paleta de colores azul vivo
-val BluePrimary    = Color(0xFF1565C0)
-val BlueLight      = Color(0xFF42A5F5)
-val BlueAccent     = Color(0xFF0288D1)
-val BlueBackground = Color(0xFFF0F6FF)
-val WhiteCard      = Color(0xFFFFFFFF)
-val GrayText       = Color(0xFF607D8B)
+val BluePrimaryLogin    = Color(0xFF1565C0)
+val BlueLightLogin      = Color(0xFF42A5F5)
+val BlueAccentLogin     = Color(0xFF0288D1)
+val BlueBackgroundLogin = Color(0xFFF0F6FF)
+val WhiteCardLogin      = Color(0xFFFFFFFF)
+val GrayTextLogin       = Color(0xFF607D8B)
 
 @Composable
-fun RegisterScreen(
-    onRegisterSuccess: () -> Unit,
-    onNavigateToLogin: () -> Unit,
-    viewModel: RegisterViewModel = hiltViewModel()
+fun LoginScreen(
+    onLoginSuccess: (role: String?) -> Unit,
+    onNavigateToRegister: () -> Unit,
+    viewModel: LoginViewModel = hiltViewModel()
 ) {
     val uiState  by viewModel.uiState.collectAsState()
-    val name     by viewModel.name.collectAsState()
-    val lastName by viewModel.lastName.collectAsState()
     val email    by viewModel.email.collectAsState()
     val password by viewModel.password.collectAsState()
 
@@ -69,14 +66,15 @@ fun RegisterScreen(
 
     LaunchedEffect(uiState) {
         when (uiState) {
-            is RegisterUiState.Success -> {
-                snackbarHostState.showSnackbar("¡Registro exitoso!")
-                onRegisterSuccess()
+            is LoginUiState.Success -> {
+                val role = (uiState as LoginUiState.Success).role
+                snackbarHostState.showSnackbar("¡Bienvenido!")
+                onLoginSuccess(role)
                 viewModel.resetState()
             }
-            is RegisterUiState.Error -> {
+            is LoginUiState.Error -> {
                 snackbarHostState.showSnackbar(
-                    (uiState as RegisterUiState.Error).message
+                    (uiState as LoginUiState.Error).message
                 )
                 viewModel.resetState()
             }
@@ -87,16 +85,15 @@ fun RegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(BlueBackground)
+            .background(BlueBackgroundLogin)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp, vertical = 48.dp),
+                .padding(horizontal = 24.dp, vertical = 64.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
 
             Box(
                 modifier = Modifier
@@ -104,27 +101,26 @@ fun RegisterScreen(
                     .clip(CircleShape)
                     .background(
                         Brush.linearGradient(
-                            colors = listOf(BluePrimary, BlueLight)
+                            colors = listOf(BluePrimaryLogin, BlueLightLogin)
                         )
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
-                    imageVector = Icons.Filled.Person,
+                    imageVector = Icons.Filled.Lock,
                     contentDescription = null,
                     tint = Color.White,
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(44.dp)
                 )
             }
 
             Spacer(modifier = Modifier.height(20.dp))
 
-
             Text(
-                text = "Register",
+                text = "Login",
                 fontSize = 36.sp,
                 fontWeight = FontWeight.ExtraBold,
-                color = BluePrimary,
+                color = BluePrimaryLogin,
                 textAlign = TextAlign.Center
             )
 
@@ -132,7 +128,7 @@ fun RegisterScreen(
                 text = "Gestión de Pedidos",
                 fontSize = 15.sp,
                 fontWeight = FontWeight.Medium,
-                color = BlueAccent,
+                color = BlueAccentLogin,
                 textAlign = TextAlign.Center
             )
 
@@ -141,51 +137,33 @@ fun RegisterScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .shadow(
-                        elevation = 8.dp,
-                        shape = RoundedCornerShape(24.dp)
-                    )
+                    .shadow(elevation = 8.dp, shape = RoundedCornerShape(24.dp))
                     .clip(RoundedCornerShape(24.dp))
-                    .background(WhiteCard)
+                    .background(WhiteCardLogin)
                     .padding(24.dp)
             ) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
 
-                    RegisterTextField(
-                        value = name,
-                        onValueChange = viewModel::onNameChange,
-                        label = "Nombre",
-                        accentColor = BluePrimary
-                    )
-
-                    RegisterTextField(
-                        value = lastName,
-                        onValueChange = viewModel::onLastNameChange,
-                        label = "Apellido",
-                        accentColor = BluePrimary
-                    )
-
-                    RegisterTextField(
+                    LoginTextField(
                         value = email,
                         onValueChange = viewModel::onEmailChange,
                         label = "Correo electrónico",
                         keyboardType = KeyboardType.Email,
-                        accentColor = BluePrimary
+                        accentColor = BluePrimaryLogin
                     )
 
-                    RegisterTextField(
+                    LoginTextField(
                         value = password,
                         onValueChange = viewModel::onPasswordChange,
                         label = "Contraseña",
                         keyboardType = KeyboardType.Password,
                         isPassword = true,
-                        accentColor = BluePrimary
+                        accentColor = BluePrimaryLogin
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
-
 
                     Box(
                         modifier = Modifier
@@ -193,19 +171,19 @@ fun RegisterScreen(
                             .height(54.dp)
                             .clip(RoundedCornerShape(14.dp))
                             .background(
-                                if (uiState is RegisterUiState.Loading)
-                                    Brush.linearGradient(listOf(GrayText, GrayText))
+                                if (uiState is LoginUiState.Loading)
+                                    Brush.linearGradient(listOf(GrayTextLogin, GrayTextLogin))
                                 else
                                     Brush.linearGradient(
-                                        colors = listOf(BluePrimary, BlueLight)
+                                        colors = listOf(BluePrimaryLogin, BlueLightLogin)
                                     )
                             )
-                            .clickable(enabled = uiState !is RegisterUiState.Loading) {
-                                viewModel.onRegister()
+                            .clickable(enabled = uiState !is LoginUiState.Loading) {
+                                viewModel.onLogin()
                             },
                         contentAlignment = Alignment.Center
                     ) {
-                        if (uiState is RegisterUiState.Loading) {
+                        if (uiState is LoginUiState.Loading) {
                             CircularProgressIndicator(
                                 color = Color.White,
                                 modifier = Modifier.size(26.dp),
@@ -213,7 +191,7 @@ fun RegisterScreen(
                             )
                         } else {
                             Text(
-                                text = "Crear cuenta",
+                                text = "Iniciar sesión",
                                 color = Color.White,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.Bold
@@ -225,22 +203,21 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.height(28.dp))
 
-// dirigir al login
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "¿Ya tienes una cuenta? ",
-                    color = GrayText,
+                    text = "¿No tienes una cuenta? ",
+                    color = GrayTextLogin,
                     fontSize = 14.sp
                 )
                 Text(
-                    text = "Inicia sesión",
-                    color = BluePrimary,
+                    text = "Regístrate",
+                    color = BluePrimaryLogin,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.clickable { onNavigateToLogin() }
+                    modifier = Modifier.clickable { onNavigateToRegister() }
                 )
             }
         }
@@ -251,7 +228,7 @@ fun RegisterScreen(
         ) { snackbarData ->
             Snackbar(
                 snackbarData = snackbarData,
-                containerColor = BluePrimary,
+                containerColor = BluePrimaryLogin,
                 contentColor = Color.White
             )
         }

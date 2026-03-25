@@ -1,4 +1,4 @@
-package com.skinny.ordermanagement.features.auth.register.presentation.components
+package com.skinny.ordermanagement.features.auth.login.presentation.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -24,7 +24,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun RegisterTextField(
+fun LoginTextField(
     value: String,
     onValueChange: (String) -> Unit,
     label: String,

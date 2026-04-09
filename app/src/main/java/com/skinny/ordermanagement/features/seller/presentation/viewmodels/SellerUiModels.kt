@@ -1,41 +1,36 @@
 package com.skinny.ordermanagement.features.seller.presentation.viewmodels
 
 data class RecentOrderUi(
-    val id: Int,
+    val id       : Int,
     val clientName: String,
-    val total: Double,
-    val status: String,
-    val date: String,
-    val products: List<OrderProductUi> = emptyList()
+    val total    : Double,
+    val status   : String,
+    val date     : String,
+    val products : List<OrderProductUi> = emptyList()
 )
 
 data class OrderProductUi(
-    val name: String,
-    val quantity: Int,
-    val price: Double
+    val name     : String,
+    val quantity : Int,
+    val price    : Double
 )
 
 data class ClientUi(
-    val id: Int,
-    val name: String,
-    val phone: String,
-    val address: String
+    val id          : String,
+    val name        : String,
+    val phone       : String,
+    val address     : String,
+    val totalOrders : Int = 0
 )
 
 data class ProductUi(
-    val id: Int,
-    val name: String,
-    val price: Double
+    val id    : Int,
+    val name  : String,
+    val price : Double
 )
 
-// ── Repositorios en memoria (persisten mientras la app esté abierta) ──────────
-
-val clientsRepository = mutableListOf(
-    ClientUi(1, "Juan Pérez",  "9611234567", "Centro"),
-    ClientUi(2, "María López", "9615552233", "Terán"),
-    ClientUi(3, "Pedro Gomez", "9619874321", "Norte")
-)
-var nextClientId = 4
+val clientsRepository = mutableListOf<ClientUi>()
+var nextClientId = 1
 
 val ordersRepository = mutableListOf(
     RecentOrderUi(1, "Juan Pérez",  185.0, "Pendiente", "12 mar, 10:30 a.m.",

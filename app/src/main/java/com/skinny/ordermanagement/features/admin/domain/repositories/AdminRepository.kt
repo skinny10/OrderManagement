@@ -23,5 +23,10 @@ interface AdminRepository {
     suspend fun deleteOrder(orderId: String): Result<Unit>
 
     suspend fun getClients(): Result<List<AdminClient>>
+    suspend fun createClient(
+        name: String,
+        phone: String,
+        address: String
+    ): Result<AdminClient>
     suspend fun deleteClient(clientId: String): Result<Unit>
 }

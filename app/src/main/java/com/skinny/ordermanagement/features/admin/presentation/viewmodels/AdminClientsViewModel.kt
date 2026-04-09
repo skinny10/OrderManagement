@@ -53,6 +53,17 @@ class AdminClientsViewModel @Inject constructor(
         }
     }
 
+    fun addClient(name: String, phone: String, address: String) {
+        viewModelScope.launch {
+            adminRepository.createClient(name, phone, address).onSuccess { client ->
+                _uiState.value = _uiState.value.copy(saveSuccess = true)
+                loadClients()
+            }.onFailure { error ->
+                _uiState.value = _uiState.value.copy(error = error.message)
+            }
+        }
+    }
+
     fun deleteClient(clientId: String) {
         viewModelScope.launch {
             adminRepository.deleteClient(clientId).onSuccess {
@@ -61,5 +72,9 @@ class AdminClientsViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(error = error.message)
             }
         }
+    }
+
+    fun clearSaveSuccess() {
+        _uiState.value = _uiState.value.copy(saveSuccess = false)
     }
 }

@@ -7,16 +7,20 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import com.skinny.ordermanagement.features.admin.domain.repositories.AdminRepository
 import javax.inject.Inject
 
 data class SellerClientsUiState(
     val clients: List<ClientUi> = emptyList(),
     val isLoading: Boolean = false,
-    val saveSuccess: Boolean = false
+    val saveSuccess: Boolean = false,
+    val error: String? = null
 )
 
 @HiltViewModel
-class SellerClientsViewModel @Inject constructor() : ViewModel() {
+class SellerClientsViewModel @Inject constructor(
+    private val adminRepository: AdminRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SellerClientsUiState())
     val uiState: StateFlow<SellerClientsUiState> = _uiState.asStateFlow()
@@ -25,25 +29,47 @@ class SellerClientsViewModel @Inject constructor() : ViewModel() {
 
     fun loadClients() {
         viewModelScope.launch {
-            _uiState.value = SellerClientsUiState(clients = clientsRepository.toList())
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            adminRepository.getClients().onSuccess { clients ->
+                val clientUis = clients.map { client ->
+                    ClientUi(
+                        id = client.id,
+                        name = client.name,
+                        phone = client.phone,
+                        address = client.address
+                    )
+                }
+                _uiState.value = SellerClientsUiState(
+                    clients = clientUis,
+                    isLoading = false
+                )
+            }.onFailure { error ->
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = error.message
+                )
+            }
         }
     }
 
     fun addClient(name: String, phone: String, address: String) {
         viewModelScope.launch {
-            val nuevo = ClientUi(nextClientId++, name.trim(), phone.trim(), address.trim())
-            clientsRepository.add(nuevo)
-            _uiState.value = _uiState.value.copy(
-                clients     = clientsRepository.toList(),
-                saveSuccess = true
-            )
+            adminRepository.createClient(name, phone, address).onSuccess { client ->
+                _uiState.value = _uiState.value.copy(saveSuccess = true)
+                loadClients()
+            }.onFailure { error ->
+                _uiState.value = _uiState.value.copy(error = error.message)
+            }
         }
     }
 
-    fun deleteClient(clientId: Int) {
+    fun deleteClient(clientId: String) {
         viewModelScope.launch {
-            clientsRepository.removeAll { it.id == clientId }
-            _uiState.value = _uiState.value.copy(clients = clientsRepository.toList())
+            adminRepository.deleteClient(clientId).onSuccess {
+                loadClients()
+            }.onFailure { error ->
+                _uiState.value = _uiState.value.copy(error = error.message)
+            }
         }
     }
 

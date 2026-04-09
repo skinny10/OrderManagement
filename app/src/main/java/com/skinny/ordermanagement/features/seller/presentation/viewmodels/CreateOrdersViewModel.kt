@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import javax.inject.Inject
+import com.skinny.ordermanagement.features.admin.domain.repositories.AdminRepository
 
 data class CartItem(
     val product: ProductUi,
@@ -28,16 +29,34 @@ data class CreateOrderUiState(
 )
 
 @HiltViewModel
-class CreateOrderViewModel @Inject constructor() : ViewModel() {
+class CreateOrderViewModel @Inject constructor(
+    private val adminRepository: AdminRepository
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CreateOrderUiState())
     val uiState: StateFlow<CreateOrderUiState> = _uiState.asStateFlow()
 
     init {
-        _uiState.value = CreateOrderUiState(
-            clients  = clientsRepository.toList(),
-            products = catalogProducts
-        )
+        loadClients()
+        _uiState.value = _uiState.value.copy(products = catalogProducts)
+    }
+
+    fun loadClients() {
+        viewModelScope.launch {
+            adminRepository.getClients().onSuccess { clients ->
+                val clientUis = clients.map { client ->
+                    ClientUi(
+                        id = client.id,
+                        name = client.name,
+                        phone = client.phone,
+                        address = client.address
+                    )
+                }
+                _uiState.value = _uiState.value.copy(clients = clientUis)
+            }.onFailure { error ->
+                _uiState.value = _uiState.value.copy(error = error.message)
+            }
+        }
     }
 
     fun selectClient(client: ClientUi) {

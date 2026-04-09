@@ -29,6 +29,7 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        tokenManager.clearSession()  // Clear token to always start with auth
         setContent {
             OrderManagementTheme {
                 Surface(

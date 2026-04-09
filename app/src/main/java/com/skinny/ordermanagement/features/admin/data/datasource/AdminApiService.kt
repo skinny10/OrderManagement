@@ -4,6 +4,8 @@ import com.skinny.ordermanagement.features.admin.data.datasource.model.AdminClie
 import com.skinny.ordermanagement.features.admin.data.datasource.model.AdminDashboardResponse
 import com.skinny.ordermanagement.features.admin.data.datasource.model.AdminOrderResponse
 import com.skinny.ordermanagement.features.admin.data.datasource.model.AdminUserResponse
+import com.skinny.ordermanagement.features.admin.data.datasource.model.CreateClientRequest
+import com.skinny.ordermanagement.features.admin.data.datasource.model.CreateClientResponse
 import com.skinny.ordermanagement.features.admin.data.datasource.model.CreateUserRequest
 import com.skinny.ordermanagement.features.admin.data.datasource.model.CreateUserResponse
 import com.skinny.ordermanagement.features.admin.data.datasource.model.DeleteResponse
@@ -38,9 +40,12 @@ interface AdminApiService {
     suspend fun deleteOrder(@Path("id") orderId: String): Response<DeleteResponse>
 
     // 👇 Clientes
-    @GET("admin/clients")
+    @GET("vendor/clients")
     suspend fun getClients(): Response<List<AdminClientResponse>>
 
-    @DELETE("admin/clients/{id}")
+    @POST("vendor/clients")
+    suspend fun createClient(@Body request: CreateClientRequest): Response<CreateClientResponse>
+
+    @DELETE("vendor/clients/{id}")
     suspend fun deleteClient(@Path("id") clientId: String): Response<DeleteResponse>
 }

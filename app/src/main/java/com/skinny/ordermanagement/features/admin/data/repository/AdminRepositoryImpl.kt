@@ -64,6 +64,14 @@ class AdminRepositoryImpl @Inject constructor(
         remoteDataSource.getClients().map { it.toEntity() }
     }
 
+    override suspend fun createClient(
+        name: String,
+        phone: String,
+        address: String
+    ): Result<AdminClient> = safeCall {
+        remoteDataSource.createClient(name, phone, address).toEntity()
+    }
+
     override suspend fun deleteClient(clientId: String): Result<Unit> = safeCall {
         remoteDataSource.deleteClient(clientId)
     }

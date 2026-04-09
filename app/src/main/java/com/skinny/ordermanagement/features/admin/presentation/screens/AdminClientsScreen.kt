@@ -17,6 +17,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.skinny.ordermanagement.features.admin.presentation.viewmodels.AdminClientUi
 import com.skinny.ordermanagement.features.admin.presentation.viewmodels.AdminClientsViewModel
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.window.Dialog
 
 
 
@@ -27,8 +30,15 @@ fun AdminClientsScreen(
     viewModel: AdminClientsViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var showDialog by remember { mutableStateOf(false) }
+    val snackbar   = remember { SnackbarHostState() }
 
-    LaunchedEffect(Unit) { viewModel.loadClients() }
+    LaunchedEffect(uiState.saveSuccess) {
+        if (uiState.saveSuccess) {
+            snackbar.showSnackbar("✅ Cliente guardado correctamente")
+            viewModel.clearSaveSuccess()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -45,23 +55,44 @@ fun AdminClientsScreen(
                     navigationIconContentColor = Color.White
                 )
             )
-        }
-    ) { padding ->
-        if (uiState.clients.isEmpty()) {
-            Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                Text("No hay clientes registrados", color = Color.Gray)
+        },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { showDialog = true }, containerColor = AdminBlue) {
+                Icon(Icons.Default.Add, contentDescription = "Agregar", tint = Color.White)
             }
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(padding)
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                items(uiState.clients, key = { it.id }) { client ->
-                    AdminClientCard(client = client, onDelete = { viewModel.deleteClient(client.id) })
+        },
+        snackbarHost = { SnackbarHost(snackbar) }
+    ) { padding ->
+        Column(Modifier.fillMaxSize().padding(padding)) {
+            if (uiState.error != null) {
+                Text("Error: ${uiState.error}", color = Color.Red, modifier = Modifier.padding(16.dp))
+            }
+            if (uiState.clients.isEmpty()) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("No hay clientes registrados", color = Color.Gray)
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    items(uiState.clients, key = { it.id }) { client ->
+                        AdminClientCard(client = client, onDelete = { viewModel.deleteClient(client.id) })
+                    }
                 }
             }
         }
+    }
+
+    if (showDialog) {
+        AddClientDialog(
+            onDismiss = { showDialog = false },
+            onSave = { name, phone, address ->
+                viewModel.addClient(name, phone, address)
+                showDialog = false
+            }
+        )
     }
 }
 
@@ -135,4 +166,59 @@ fun AdminClientCard(client: AdminClientUi, onDelete: () -> Unit) {
             }
         )
     }
+}
+
+@Composable
+fun AddClientDialog(onDismiss: () -> Unit, onSave: (String, String, String) -> Unit) {
+    var name by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
+    var address by remember { mutableStateOf("") }
+    var validName by remember { mutableStateOf(true) }
+    var validPhone by remember { mutableStateOf(true) }
+    var validAddress by remember { mutableStateOf(true) }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text("Agregar Cliente") },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it; validName = name.isNotBlank() },
+                    label = { Text("Nombre") },
+                    isError = !validName
+                )
+                Spacer(Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = phone,
+                    onValueChange = { phone = it; validPhone = phone.isNotBlank() },
+                    label = { Text("Teléfono") },
+                    isError = !validPhone,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
+                )
+                Spacer(Modifier.height(8.dp))
+                OutlinedTextField(
+                    value = address,
+                    onValueChange = { address = it; validAddress = address.isNotBlank() },
+                    label = { Text("Dirección") },
+                    isError = !validAddress
+                )
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    if (validName && validPhone && validAddress) {
+                        onSave(name, phone, address)
+                    }
+                },
+                enabled = validName && validPhone && validAddress
+            ) {
+                Text("Guardar")
+            }
+        },
+        dismissButton = {
+            OutlinedButton(onClick = onDismiss) { Text("Cancelar") }
+        }
+    )
 }

@@ -176,7 +176,7 @@ fun CategorySheet(
         Spacer(Modifier.height(16.dp))
 
         if (uiState.categoryIsClients) {
-            clientsRepository.forEach { client ->
+            uiState.clients.forEach { client ->
                 Card(
                     Modifier.fillMaxWidth().padding(bottom = 8.dp),
                     shape = RoundedCornerShape(10.dp),

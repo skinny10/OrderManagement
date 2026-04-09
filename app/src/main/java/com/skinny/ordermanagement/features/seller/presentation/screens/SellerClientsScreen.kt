@@ -61,19 +61,24 @@ fun SellerClientsScreen(
         },
         snackbarHost = { SnackbarHost(snackbar) }
     ) { padding ->
-        if (uiState.clients.isEmpty()) {
-            Box(Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                Text("No hay clientes registrados.\nToca + para agregar uno.",
-                    color = Color.Gray, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+        Column(Modifier.fillMaxSize().padding(padding)) {
+            if (uiState.error != null) {
+                Text("Error: ${uiState.error}", color = Color.Red, modifier = Modifier.padding(16.dp))
             }
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(padding)
-                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                items(uiState.clients, key = { it.id }) { client ->
-                    ClientCard(client = client, onDelete = { viewModel.deleteClient(client.id) })
+            if (uiState.clients.isEmpty()) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("No hay clientes registrados.\nToca + para agregar uno.",
+                        color = Color.Gray, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                }
+            } else {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                        .padding(horizontal = 16.dp, vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    items(uiState.clients, key = { it.id }) { client ->
+                        ClientCard(client = client, onDelete = { viewModel.deleteClient(client.id) })
+                    }
                 }
             }
         }

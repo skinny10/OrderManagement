@@ -28,3 +28,15 @@ data class DeleteResponse(
     @SerializedName("success") val success: Boolean,
     @SerializedName("message") val message: String
 )
+
+data class CreateClientRequest(
+    @SerializedName("name")    val name: String,
+    @SerializedName("phone")   val phone: String,
+    @SerializedName("address") val address: String
+)
+
+data class CreateClientResponse(
+    @SerializedName("success") val success: Boolean,
+    @SerializedName("message") val message: String,
+    @SerializedName("client")  val client: AdminClientResponse? = null
+)

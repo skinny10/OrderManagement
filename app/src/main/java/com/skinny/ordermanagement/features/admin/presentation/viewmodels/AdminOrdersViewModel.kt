@@ -35,7 +35,7 @@ class AdminOrdersViewModel @Inject constructor(
                 val orderUis = orders.map { order ->
                     AdminOrderUi(
                         id = order.id,
-                        clientName = order.clientName,
+                        clientName = order.clientName ?: "Cliente desconocido",
                         sellerName = order.sellerName,
                         deliveryName = order.deliveryName,
                         total = order.total,

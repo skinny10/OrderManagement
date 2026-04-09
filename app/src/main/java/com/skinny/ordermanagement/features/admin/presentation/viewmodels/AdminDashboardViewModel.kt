@@ -3,10 +3,12 @@ package com.skinny.ordermanagement.features.admin.presentation.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.skinny.ordermanagement.features.admin.domain.repositories.AdminRepository
 import javax.inject.Inject
 
@@ -26,7 +28,7 @@ data class AdminDashboardUiState(
     val sheetTitle: String = "",
     val sheetOrders: List<AdminOrderUi> = emptyList(),
     val sheetCount: Int = 0,
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     val error: String? = null
 )
 
@@ -43,11 +45,14 @@ class AdminDashboardViewModel @Inject constructor(
     fun loadDashboard() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            adminRepository.getDashboard().onSuccess { dashboard ->
+            val result = withContext(Dispatchers.IO) {
+                adminRepository.getDashboard()
+            }
+            result.onSuccess { dashboard ->
                 val recentOrders = dashboard.recentOrders.map { order ->
                     AdminOrderUi(
                         id = order.id,
-                        clientName = order.clientName,
+                        clientName = order.clientName ?: "Cliente desconocido",
                         sellerName = order.sellerName,
                         deliveryName = order.deliveryName,
                         total = order.total,

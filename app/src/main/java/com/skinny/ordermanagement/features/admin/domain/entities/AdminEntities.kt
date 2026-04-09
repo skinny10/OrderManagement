@@ -10,7 +10,7 @@ data class AdminUser(
 
 data class AdminOrder(
     val id: String,
-    val clientName: String,
+    val clientName: String?,
     val sellerName: String,
     val deliveryName: String,
     val total: Double,

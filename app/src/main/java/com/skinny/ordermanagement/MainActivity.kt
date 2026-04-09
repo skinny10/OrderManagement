@@ -35,44 +35,46 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    var currentScreen by remember { mutableStateOf("login") }
-                    when (currentScreen) {
-                        "login" -> LoginScreen(
-                            onLoginSuccess = { role ->
-                                currentScreen = "logged_in"
-                            },
-                            onNavigateToRegister = {
-                                currentScreen = "register"
-                            }
-                        )
-                        "register" -> RegisterScreen(
-                            onRegisterSuccess = {
-                                currentScreen = "login"
-                            },
-                            onNavigateToLogin = {
-                                currentScreen = "login"
-                            }
-                        )
-                        "logged_in" -> {
-                            val role = tokenManager.getRole()
-                            when (role) {
-                                "admin" -> AdminNavGraph(onLogout = {
-                                    tokenManager.clearSession()
+                    var isLoggedIn by remember { mutableStateOf(tokenManager.isLoggedIn()) }
+                    if (isLoggedIn) {
+                        val role = tokenManager.getRole()
+                        when (role) {
+                            "admin" -> AdminNavGraph(onLogout = {
+                                tokenManager.clearSession()
+                                isLoggedIn = false
+                            })
+                            "vendor" -> SellerNavGraph(onLogout = {
+                                tokenManager.clearSession()
+                                isLoggedIn = false
+                            })
+                            "delivery" -> DeliveryNavGraph(onLogout = {
+                                tokenManager.clearSession()
+                                isLoggedIn = false
+                            })
+                            else -> AdminNavGraph(onLogout = {
+                                tokenManager.clearSession()
+                                isLoggedIn = false
+                            }) // Default to admin for testing
+                        }
+                    } else {
+                        var currentScreen by remember { mutableStateOf("login") }
+                        when (currentScreen) {
+                            "login" -> LoginScreen(
+                                onLoginSuccess = { role ->
+                                    isLoggedIn = true
+                                },
+                                onNavigateToRegister = {
+                                    currentScreen = "register"
+                                }
+                            )
+                            "register" -> RegisterScreen(
+                                onRegisterSuccess = {
                                     currentScreen = "login"
-                                })
-                                "vendor" -> SellerNavGraph(onLogout = {
-                                    tokenManager.clearSession()
+                                },
+                                onNavigateToLogin = {
                                     currentScreen = "login"
-                                })
-                                "delivery" -> DeliveryNavGraph(onLogout = {
-                                    tokenManager.clearSession()
-                                    currentScreen = "login"
-                                })
-                                else -> AdminNavGraph(onLogout = {
-                                    tokenManager.clearSession()
-                                    currentScreen = "login"
-                                })
-                            }
+                                }
+                            )
                         }
                     }
                 }

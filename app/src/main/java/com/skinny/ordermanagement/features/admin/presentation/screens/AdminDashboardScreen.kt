@@ -73,6 +73,9 @@ fun AdminDashboardScreen(
                 Text("Bienvenido, Administrador", fontSize = 22.sp, fontWeight = FontWeight.Bold)
                 Text("Vista general del sistema", fontSize = 14.sp, color = Color.Gray)
                 Spacer(Modifier.height(4.dp))
+                if (uiState.error != null) {
+                    Text("Error: ${uiState.error}", color = Color.Red, fontSize = 14.sp)
+                }
             }
 
 

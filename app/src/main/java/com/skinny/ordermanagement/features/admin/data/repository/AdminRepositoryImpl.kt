@@ -9,6 +9,7 @@ import com.skinny.ordermanagement.features.admin.domain.entities.AdminDashboard
 import com.skinny.ordermanagement.features.admin.domain.entities.AdminOrder
 import com.skinny.ordermanagement.features.admin.domain.entities.AdminUser
 import com.skinny.ordermanagement.features.admin.domain.repositories.AdminRepository
+import java.util.UUID
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -108,7 +109,7 @@ private fun AdminOrderResponse.toEntity() = AdminOrder(
 )
 
 private fun AdminClientResponse.toEntity() = AdminClient(
-    id          = id,
+    id          = id ?: UUID.randomUUID().toString(),
     name        = name,
     phone       = phone,
     address     = address,

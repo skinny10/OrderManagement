@@ -7,11 +7,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import java.util.UUID
 import javax.inject.Inject
-import com.skinny.ordermanagement.features.admin.domain.repositories.AdminRepository
+import com.skinny.ordermanagement.features.seller.domain.usecases.GetSellerClientsUseCase
+import com.skinny.ordermanagement.features.seller.domain.usecases.CreateOrderUseCase
 
 data class CartItem(
     val product: ProductUi,
@@ -30,7 +31,8 @@ data class CreateOrderUiState(
 
 @HiltViewModel
 class CreateOrderViewModel @Inject constructor(
-    private val adminRepository: AdminRepository
+    private val getClientsUseCase: GetSellerClientsUseCase,
+    private val createOrderUseCase: CreateOrderUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CreateOrderUiState())
@@ -43,7 +45,7 @@ class CreateOrderViewModel @Inject constructor(
 
     fun loadClients() {
         viewModelScope.launch {
-            adminRepository.getClients().onSuccess { clients ->
+            getClientsUseCase().onSuccess { clients ->
                 val clientUis = clients.map { client ->
                     ClientUi(
                         id = client.id,
@@ -91,27 +93,23 @@ class CreateOrderViewModel @Inject constructor(
         viewModelScope.launch {
             val state = _uiState.value
             if (state.selectedClient == null) {
-                _uiState.value = state.copy(error = "Selecciona un cliente para continuar")
+                _uiState.value = state.copy(error = "Selecciona un cliente")
                 return@launch
             }
             if (state.cartItems.isEmpty()) {
                 _uiState.value = state.copy(error = "Agrega al menos un producto")
                 return@launch
             }
-            val sdf  = SimpleDateFormat("dd MMM, hh:mm a", Locale("es", "MX"))
-            val date = sdf.format(Date())
-            val newOrder = RecentOrderUi(
-                id         = nextOrderId++,
-                clientName = state.selectedClient.name,
-                total      = state.total,
-                status     = "Pendiente",
-                date       = date,
-                products   = state.cartItems.map {
-                    OrderProductUi(it.product.name, it.quantity, it.product.price)
-                }
-            )
-            ordersRepository.add(newOrder)
-            _uiState.value = state.copy(orderCreated = true, error = null)
+
+            // ✅ Llama al API con el id del cliente y el total
+            createOrderUseCase(
+                clientId = state.selectedClient.id,
+                total    = state.total
+            ).onSuccess {
+                _uiState.value = state.copy(orderCreated = true, error = null)
+            }.onFailure { error ->
+                _uiState.value = state.copy(error = error.message)
+            }
         }
     }
 

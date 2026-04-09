@@ -9,7 +9,6 @@ import com.skinny.ordermanagement.features.admin.domain.entities.AdminDashboard
 import com.skinny.ordermanagement.features.admin.domain.entities.AdminOrder
 import com.skinny.ordermanagement.features.admin.domain.entities.AdminUser
 import com.skinny.ordermanagement.features.admin.domain.repositories.AdminRepository
-import java.util.UUID
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
@@ -65,18 +64,6 @@ class AdminRepositoryImpl @Inject constructor(
         remoteDataSource.getClients().map { it.toEntity() }
     }
 
-    override suspend fun createClient(
-        name: String,
-        phone: String,
-        address: String
-    ): Result<AdminClient> = safeCall {
-        remoteDataSource.createClient(name, phone, address).toEntity()
-    }
-
-    override suspend fun deleteClient(clientId: String): Result<Unit> = safeCall {
-        remoteDataSource.deleteClient(clientId)
-    }
-
     private suspend fun <T> safeCall(call: suspend () -> T): Result<T> {
         return try {
             Result.success(call())
@@ -109,7 +96,7 @@ private fun AdminOrderResponse.toEntity() = AdminOrder(
 )
 
 private fun AdminClientResponse.toEntity() = AdminClient(
-    id          = id ?: UUID.randomUUID().toString(),
+    id          = id ?: "",
     name        = name,
     phone       = phone,
     address     = address,

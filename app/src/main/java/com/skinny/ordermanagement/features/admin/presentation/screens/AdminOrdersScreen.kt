@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.skinny.ordermanagement.features.admin.presentation.viewmodels.AdminOrderUi
 import com.skinny.ordermanagement.features.admin.presentation.viewmodels.AdminOrdersViewModel
+import com.skinny.ordermanagement.ui.theme.PrimaryBlue
+import com.skinny.ordermanagement.ui.theme.getStatusColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,11 +39,11 @@ fun AdminOrdersScreen(
                 title = { Text("Todos los Pedidos") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Regresar")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Regresar")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = AdminBlue,
+                    containerColor = PrimaryBlue,
                     titleContentColor = Color.White,
                     navigationIconContentColor = Color.White
                 )
@@ -59,10 +61,10 @@ fun AdminOrdersScreen(
                     val selected = uiState.selectedFilter == filter
                     FilterChip(
                         selected = selected,
-                        onClick  = { viewModel.filterByStatus(filter) },
+                        onClick  = { viewModel.filterOrders(filter) },
                         label    = { Text(filter, fontSize = 13.sp) },
                         colors   = FilterChipDefaults.filterChipColors(
-                            selectedContainerColor = AdminBlue,
+                            selectedContainerColor = PrimaryBlue,
                             selectedLabelColor     = Color.White
                         )
                     )
@@ -82,7 +84,7 @@ fun AdminOrdersScreen(
                     items(uiState.filteredOrders, key = { it.id }) { order ->
                         AdminOrderCardWithDelete(
                             order    = order,
-                            onDelete = { viewModel.deleteOrder(order.id) }
+                            onDelete = { }
                         )
                     }
                 }
@@ -93,7 +95,7 @@ fun AdminOrdersScreen(
 
 @Composable
 fun AdminOrderCardWithDelete(order: AdminOrderUi, onDelete: () -> Unit) {
-    val color = adminStatusColor(order.status)
+    val color = getStatusColor(order.status)
     var showConfirm by remember { mutableStateOf(false) }
 
     Card(
@@ -107,7 +109,7 @@ fun AdminOrderCardWithDelete(order: AdminOrderUi, onDelete: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Pedido #${order.id}", fontWeight = FontWeight.Bold, fontSize = 15.sp)
+                // Eliminado el id del pedido
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Surface(color = color.copy(alpha = 0.15f), shape = RoundedCornerShape(20.dp)) {
                         Text(
@@ -135,7 +137,7 @@ fun AdminOrderCardWithDelete(order: AdminOrderUi, onDelete: () -> Unit) {
                     Text(order.date, fontSize = 11.sp, color = Color.LightGray)
                 }
                 Text("\$${order.total.toInt()}", fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp, color = AdminBlue)
+                    fontSize = 16.sp, color = PrimaryBlue)
             }
         }
     }
@@ -144,7 +146,7 @@ fun AdminOrderCardWithDelete(order: AdminOrderUi, onDelete: () -> Unit) {
         AlertDialog(
             onDismissRequest = { showConfirm = false },
             title = { Text("Eliminar Pedido") },
-            text  = { Text("¿Estás seguro de eliminar el Pedido #${order.id}? Esta acción no se puede deshacer.") },
+            text  = { Text("¿Estás seguro de eliminar este pedido? Esta acción no se puede deshacer.") },
             confirmButton = {
                 Button(
                     onClick = { showConfirm = false; onDelete() },

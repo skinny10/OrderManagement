@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import com.skinny.ordermanagement.features.admin.domain.repositories.AdminRepository
+import com.skinny.ordermanagement.features.admin.domain.usecases.GetAdminOrdersUseCase
 import javax.inject.Inject
 
 data class AdminOrdersUiState(
@@ -20,7 +20,7 @@ data class AdminOrdersUiState(
 
 @HiltViewModel
 class AdminOrdersViewModel @Inject constructor(
-    private val adminRepository: AdminRepository
+    private val getOrdersUseCase: GetAdminOrdersUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AdminOrdersUiState())
@@ -31,7 +31,7 @@ class AdminOrdersViewModel @Inject constructor(
     fun loadOrders() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            adminRepository.getOrders().onSuccess { orders ->
+            getOrdersUseCase().onSuccess { orders ->
                 val orderUis = orders.map { order ->
                     AdminOrderUi(
                         id = order.id,
@@ -48,7 +48,7 @@ class AdminOrdersViewModel @Inject constructor(
                         },
                         date = order.date
                     )
-                }.reversed()
+                }
                 _uiState.value = AdminOrdersUiState(
                     orders = orderUis,
                     filteredOrders = orderUis,
@@ -63,22 +63,15 @@ class AdminOrdersViewModel @Inject constructor(
         }
     }
 
-    fun filterByStatus(status: String) {
-        val all = _uiState.value.orders
-        val filtered = if (status == "Todos") all else all.filter { it.status == status }
-        _uiState.value = _uiState.value.copy(
-            filteredOrders = filtered,
-            selectedFilter = status
-        )
-    }
-
-    fun deleteOrder(orderId: String) {
-        viewModelScope.launch {
-            adminRepository.deleteOrder(orderId).onSuccess {
-                loadOrders()
-            }.onFailure { error ->
-                _uiState.value = _uiState.value.copy(error = error.message)
-            }
+    fun filterOrders(status: String) {
+        val filtered = if (status == "Todos") {
+            _uiState.value.orders
+        } else {
+            _uiState.value.orders.filter { it.status == status }
         }
+        _uiState.value = _uiState.value.copy(
+            selectedFilter = status,
+            filteredOrders = filtered
+        )
     }
 }

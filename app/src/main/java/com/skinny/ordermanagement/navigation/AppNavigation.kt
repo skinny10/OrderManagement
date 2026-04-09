@@ -23,7 +23,6 @@ import com.skinny.ordermanagement.features.delivery.presentation.screens.*
 import com.skinny.ordermanagement.features.seller.presentation.screens.*
 import com.skinny.ordermanagement.features.admin.presentation.screens.AdminDashboardScreen
 import com.skinny.ordermanagement.features.admin.presentation.screens.AdminOrdersScreen
-import com.skinny.ordermanagement.features.admin.presentation.screens.AdminClientsScreen
 import com.skinny.ordermanagement.features.admin.presentation.screens.AdminUsersScreen
 import kotlinx.coroutines.launch
 
@@ -35,13 +34,13 @@ private const val SELLER_ORDERS       = "seller_orders"
 private const val SELLER_CLIENTS      = "seller_clients"
 private const val SELLER_CREATE_ORDER = "seller_create_order"
 private const val SELLER_ORDER_DETAIL = "seller_order_detail/{orderId}"
-private fun sellerOrderDetail(id: Int) = "seller_order_detail/$id"
+private fun sellerOrderDetail(id: String) = "seller_order_detail/$id"
 
 
 private const val DELIVERY_DASHBOARD    = "delivery_dashboard"
 private const val DELIVERY_ORDERS       = "delivery_orders"
 private const val DELIVERY_ORDER_DETAIL = "delivery_order_detail/{orderId}"
-private fun deliveryOrderDetail(id: Int) = "delivery_order_detail/$id"
+private fun deliveryOrderDetail(id: String) = "delivery_order_detail/$id"
 
 
 private const val ADMIN_DASHBOARD = "admin_dashboard"
@@ -113,10 +112,10 @@ fun SellerNavGraph(onLogout: () -> Unit) {
             }
             composable(
                 route = SELLER_ORDER_DETAIL,
-                arguments = listOf(navArgument("orderId") { type = NavType.IntType })
+                arguments = listOf(navArgument("orderId") { type = NavType.StringType })
             ) { back ->
                 OrderDetailScreen(
-                    orderId = back.arguments?.getInt("orderId") ?: 0,
+                    orderId = back.arguments?.getString("orderId") ?: "0",
                     onBack  = { navController.popBackStack() }
                 )
             }
@@ -176,10 +175,10 @@ fun DeliveryNavGraph(onLogout: () -> Unit) {
             }
             composable(
                 route = DELIVERY_ORDER_DETAIL,
-                arguments = listOf(navArgument("orderId") { type = NavType.IntType })
+                arguments = listOf(navArgument("orderId") { type = NavType.StringType })
             ) { back ->
                 DeliveryOrderDetailScreen(
-                    orderId = back.arguments?.getInt("orderId") ?: 0,
+                    orderId = back.arguments?.getString("orderId") ?: "0",
                     onBack  = { navController.popBackStack() }
                 )
             }
@@ -234,9 +233,6 @@ fun AdminNavGraph(onLogout: () -> Unit) {
             }
             composable(ADMIN_ORDERS) {
                 AdminOrdersScreen(onBack = { navController.popBackStack() })
-            }
-            composable(ADMIN_CLIENTS) {
-                AdminClientsScreen(onBack = { navController.popBackStack() })
             }
             composable(ADMIN_USERS) {
                 AdminUsersScreen(onBack = { navController.popBackStack() })

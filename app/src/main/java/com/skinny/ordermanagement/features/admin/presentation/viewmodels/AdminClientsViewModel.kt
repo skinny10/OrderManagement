@@ -7,19 +7,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import com.skinny.ordermanagement.features.admin.domain.repositories.AdminRepository
+import com.skinny.ordermanagement.features.admin.domain.usecases.GetAdminClientsUseCase
 import javax.inject.Inject
 
 data class AdminClientsUiState(
     val clients: List<AdminClientUi> = emptyList(),
     val isLoading: Boolean = false,
-    val saveSuccess: Boolean = false,
     val error: String? = null
 )
 
 @HiltViewModel
 class AdminClientsViewModel @Inject constructor(
-    private val adminRepository: AdminRepository
+    private val getClientsUseCase: GetAdminClientsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AdminClientsUiState())
@@ -30,13 +29,13 @@ class AdminClientsViewModel @Inject constructor(
     fun loadClients() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            adminRepository.getClients().onSuccess { clients ->
+            getClientsUseCase().onSuccess { clients ->
                 val clientUis = clients.map { client ->
                     AdminClientUi(
-                        id = client.id,
-                        name = client.name,
-                        phone = client.phone,
-                        address = client.address,
+                        id = client.id ?: "",
+                        name = client.name.ifBlank { "Sin nombre" },
+                        phone = client.phone.ifBlank { "" },
+                        address = client.address.ifBlank { "" },
                         totalOrders = client.totalOrders
                     )
                 }
@@ -51,30 +50,5 @@ class AdminClientsViewModel @Inject constructor(
                 )
             }
         }
-    }
-
-    fun addClient(name: String, phone: String, address: String) {
-        viewModelScope.launch {
-            adminRepository.createClient(name, phone, address).onSuccess { client ->
-                _uiState.value = _uiState.value.copy(saveSuccess = true)
-                loadClients()
-            }.onFailure { error ->
-                _uiState.value = _uiState.value.copy(error = error.message)
-            }
-        }
-    }
-
-    fun deleteClient(clientId: String) {
-        viewModelScope.launch {
-            adminRepository.deleteClient(clientId).onSuccess {
-                loadClients()
-            }.onFailure { error ->
-                _uiState.value = _uiState.value.copy(error = error.message)
-            }
-        }
-    }
-
-    fun clearSaveSuccess() {
-        _uiState.value = _uiState.value.copy(saveSuccess = false)
     }
 }

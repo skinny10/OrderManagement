@@ -103,16 +103,16 @@ fun NavGraph(navController: NavHostController) {
             )
         }
 
-        // 👇 Admin Clients
-        composable(route = AppRoutes.Admin.Clients.route) {
-            AdminClientsScreen(
+        // 👇 Admin Users
+        composable(route = AppRoutes.Admin.Users.route) {
+            AdminUsersScreen(
                 onBack = { navController.popBackStack() }
             )
         }
 
-        // 👇 Admin Users
-        composable(route = AppRoutes.Admin.Users.route) {
-            AdminUsersScreen(
+        // 👇 Admin Clients
+        composable(route = AppRoutes.Admin.Clients.route) {
+            AdminClientsScreen(
                 onBack = { navController.popBackStack() }
             )
         }

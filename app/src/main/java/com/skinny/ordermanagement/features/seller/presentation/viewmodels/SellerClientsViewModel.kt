@@ -7,7 +7,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import com.skinny.ordermanagement.features.admin.domain.repositories.AdminRepository
+import com.skinny.ordermanagement.features.seller.domain.usecases.GetSellerClientsUseCase
+import com.skinny.ordermanagement.features.seller.domain.usecases.CreateSellerClientUseCase
+import com.skinny.ordermanagement.features.seller.domain.usecases.DeleteSellerClientUseCase
 import javax.inject.Inject
 
 data class SellerClientsUiState(
@@ -19,7 +21,9 @@ data class SellerClientsUiState(
 
 @HiltViewModel
 class SellerClientsViewModel @Inject constructor(
-    private val adminRepository: AdminRepository
+    private val getClientsUseCase: GetSellerClientsUseCase,
+    private val createClientUseCase: CreateSellerClientUseCase,
+    private val deleteClientUseCase: DeleteSellerClientUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SellerClientsUiState())
@@ -30,13 +34,13 @@ class SellerClientsViewModel @Inject constructor(
     fun loadClients() {
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true)
-            adminRepository.getClients().onSuccess { clients ->
+            getClientsUseCase().onSuccess { clients ->
                 val clientUis = clients.map { client ->
                     ClientUi(
                         id = client.id,
-                        name = client.name,
-                        phone = client.phone,
-                        address = client.address
+                        name = client.name ?: "Sin nombre",
+                        phone = client.phone ?: "",
+                        address = client.address ?: ""
                     )
                 }
                 _uiState.value = SellerClientsUiState(
@@ -54,7 +58,7 @@ class SellerClientsViewModel @Inject constructor(
 
     fun addClient(name: String, phone: String, address: String) {
         viewModelScope.launch {
-            adminRepository.createClient(name, phone, address).onSuccess { client ->
+            createClientUseCase(name, phone, address).onSuccess { client ->
                 _uiState.value = _uiState.value.copy(saveSuccess = true)
                 loadClients()
             }.onFailure { error ->
@@ -65,7 +69,7 @@ class SellerClientsViewModel @Inject constructor(
 
     fun deleteClient(clientId: String) {
         viewModelScope.launch {
-            adminRepository.deleteClient(clientId).onSuccess {
+            deleteClientUseCase(clientId).onSuccess {
                 loadClients()
             }.onFailure { error ->
                 _uiState.value = _uiState.value.copy(error = error.message)

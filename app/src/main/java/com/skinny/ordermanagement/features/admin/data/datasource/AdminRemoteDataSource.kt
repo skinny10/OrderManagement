@@ -5,7 +5,6 @@ import com.skinny.ordermanagement.features.admin.data.datasource.model.AdminDash
 import com.skinny.ordermanagement.features.admin.data.datasource.model.AdminOrderResponse
 import com.skinny.ordermanagement.features.admin.data.datasource.model.AdminUserResponse
 import com.skinny.ordermanagement.features.admin.data.datasource.model.CreateUserRequest
-import com.skinny.ordermanagement.features.admin.data.datasource.model.CreateClientRequest
 import javax.inject.Inject
 
 
@@ -23,13 +22,6 @@ interface AdminRemoteDataSource {
     suspend fun getOrders(): List<AdminOrderResponse>
     suspend fun deleteOrder(orderId: String)
     suspend fun getClients(): List<AdminClientResponse>
-    suspend fun createClient(
-        name: String,
-        phone: String,
-        address: String
-    ): AdminClientResponse
-
-    suspend fun deleteClient(clientId: String)
 }
 
 class AdminRemoteDataSourceImpl @Inject constructor(
@@ -92,28 +84,5 @@ class AdminRemoteDataSourceImpl @Inject constructor(
         val response = apiService.getClients()
         if (response.isSuccessful) return response.body() ?: emptyList()
         throw Exception("Error del servidor: ${response.code()}")
-    }
-
-    override suspend fun createClient(
-        name: String,
-        phone: String,
-        address: String
-    ): AdminClientResponse {
-        val response = apiService.createClient(
-            CreateClientRequest(
-                name = name,
-                phone = phone,
-                address = address
-            )
-        )
-        if (response.isSuccessful) {
-            return response.body()?.client ?: throw Exception("Error al crear cliente")
-        }
-        throw Exception("Error del servidor: ${response.code()}")
-    }
-
-    override suspend fun deleteClient(clientId: String) {
-        val response = apiService.deleteClient(clientId)
-        if (!response.isSuccessful) throw Exception("Error al eliminar cliente: ${response.code()}")
     }
 }

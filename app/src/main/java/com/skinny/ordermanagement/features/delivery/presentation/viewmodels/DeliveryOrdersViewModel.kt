@@ -7,10 +7,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import com.skinny.ordermanagement.features.delivery.domain.usecases.GetDeliveryOrdersUseCase
+import com.skinny.ordermanagement.features.delivery.domain.usecases.UpdateDeliveryOrderStatusUseCase
 import javax.inject.Inject
 
 data class DeliveryOrderUi(
-    val id: Int,
+    val id: String,
     val clientName: String,
     val address: String,
     val total: Double,
@@ -20,18 +22,15 @@ data class DeliveryOrderUi(
 
 data class DeliveryOrdersUiState(
     val orders: List<DeliveryOrderUi> = emptyList(),
-    val isLoading: Boolean = false
-)
-
-
-private val deliveryOrdersRepo = mutableListOf(
-    DeliveryOrderUi(1, "Juan Pérez",  "Centro", 185.0, "Pendiente", "12 mar, 10:30 a.m."),
-    DeliveryOrderUi(2, "María López", "Terán",  240.0, "En camino",  "12 mar, 11:00 a.m."),
-    DeliveryOrderUi(3, "Pedro Gomez", "Norte",  155.0, "Entregado",  "11 mar, 02:20 p.m.")
+    val isLoading: Boolean = false,
+    val error: String? = null
 )
 
 @HiltViewModel
-class DeliveryOrdersViewModel @Inject constructor() : ViewModel() {
+class DeliveryOrdersViewModel @Inject constructor(
+    private val getOrdersUseCase: GetDeliveryOrdersUseCase,
+    private val updateStatusUseCase: UpdateDeliveryOrderStatusUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DeliveryOrdersUiState())
     val uiState: StateFlow<DeliveryOrdersUiState> = _uiState.asStateFlow()
@@ -40,17 +39,38 @@ class DeliveryOrdersViewModel @Inject constructor() : ViewModel() {
 
     fun loadOrders() {
         viewModelScope.launch {
-            _uiState.value = DeliveryOrdersUiState(orders = deliveryOrdersRepo.toList())
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            getOrdersUseCase().onSuccess { orders ->
+                val orderUis = orders.map { order ->
+                    DeliveryOrderUi(
+                        id         = order.id,
+                        clientName = order.clientName,
+                        address    = order.address,
+                        total      = order.total,
+                        status     = order.status,
+                        date       = order.date
+                    )
+                }
+                _uiState.value = DeliveryOrdersUiState(
+                    orders    = orderUis,
+                    isLoading = false
+                )
+            }.onFailure { error ->
+                _uiState.value = _uiState.value.copy(
+                    isLoading = false,
+                    error = error.message
+                )
+            }
         }
     }
 
-    fun updateOrderStatus(orderId: Int, newStatus: String) {
+    fun updateOrderStatus(orderId: String, newStatus: String) {
         viewModelScope.launch {
-            val index = deliveryOrdersRepo.indexOfFirst { it.id == orderId }
-            if (index >= 0) {
-                deliveryOrdersRepo[index] = deliveryOrdersRepo[index].copy(status = newStatus)
+            updateStatusUseCase(orderId, newStatus).onSuccess {
+                loadOrders()
+            }.onFailure { error ->
+                _uiState.value = _uiState.value.copy(error = error.message)
             }
-            _uiState.value = DeliveryOrdersUiState(orders = deliveryOrdersRepo.toList())
         }
     }
 }

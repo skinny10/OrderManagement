@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Person
@@ -38,14 +38,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.skinny.ordermanagement.ui.theme.PrimaryBlue
+import com.skinny.ordermanagement.ui.theme.getStatusColor
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrderDetailScreen(
-    orderId: Int,
+    orderId: String,
     onBack: () -> Unit
 ) {
     val currentStatus = "En camino"
-    val statusClr = statusColor(currentStatus)
+    val statusClr = getStatusColor(currentStatus)
 
     Scaffold(
         topBar = {
@@ -53,7 +56,7 @@ fun OrderDetailScreen(
                 title = { Text("Pedido #$orderId") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Regresar")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Regresar")
                     }
                 },
                 actions = {

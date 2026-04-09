@@ -333,7 +333,7 @@ fun AdminOrderCard(order: AdminOrderUi, onClick: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Pedido #${order.id}", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                // Eliminado el id del pedido
                 Surface(color = color.copy(alpha = 0.15f), shape = RoundedCornerShape(20.dp)) {
                     Text(
                         order.status,

@@ -1,9 +1,9 @@
 package com.skinny.ordermanagement.features.admin.domain.repositories
 
-import com.skinny.ordermanagement.features.admin.domain.entities.AdminClient
 import com.skinny.ordermanagement.features.admin.domain.entities.AdminDashboard
 import com.skinny.ordermanagement.features.admin.domain.entities.AdminOrder
 import com.skinny.ordermanagement.features.admin.domain.entities.AdminUser
+import com.skinny.ordermanagement.features.admin.domain.entities.AdminClient
 
 interface AdminRepository {
 
@@ -21,12 +21,5 @@ interface AdminRepository {
 
     suspend fun getOrders(): Result<List<AdminOrder>>
     suspend fun deleteOrder(orderId: String): Result<Unit>
-
     suspend fun getClients(): Result<List<AdminClient>>
-    suspend fun createClient(
-        name: String,
-        phone: String,
-        address: String
-    ): Result<AdminClient>
-    suspend fun deleteClient(clientId: String): Result<Unit>
 }

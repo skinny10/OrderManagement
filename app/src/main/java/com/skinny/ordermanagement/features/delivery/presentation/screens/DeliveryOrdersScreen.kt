@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,7 +24,7 @@ import com.skinny.ordermanagement.features.delivery.presentation.viewmodels.Deli
 @Composable
 fun DeliveryOrdersScreen(
     onBack: () -> Unit,
-    onOrderClick: (Int) -> Unit,
+    onOrderClick: (String) -> Unit,
     viewModel: DeliveryOrdersViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -38,7 +38,7 @@ fun DeliveryOrdersScreen(
                 title = { Text("Mis Pedidos") },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, contentDescription = "Regresar")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Regresar")
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -96,7 +96,6 @@ fun DeliveryOrderCard(order: DeliveryOrderUi, onClick: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Pedido #${order.id}", fontWeight = FontWeight.Bold, fontSize = 15.sp)
                 Surface(
                     color = color.copy(alpha = 0.15f),
                     shape = RoundedCornerShape(20.dp)

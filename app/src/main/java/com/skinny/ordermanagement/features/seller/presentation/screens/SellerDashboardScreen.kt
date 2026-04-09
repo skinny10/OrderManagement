@@ -20,16 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.skinny.ordermanagement.features.seller.presentation.viewmodels.*
-
-val PrimaryBlue = Color(0xFF5C6BC0)
-
-fun statusColor(status: String): Color = when (status) {
-    "Pendiente"  -> Color(0xFFF59E0B)
-    "Preparando" -> Color(0xFF3B82F6)
-    "En camino"  -> Color(0xFF8B5CF6)
-    "Entregado"  -> Color(0xFF10B981)
-    else         -> Color.Gray
-}
+import com.skinny.ordermanagement.ui.theme.PrimaryBlue
+import com.skinny.ordermanagement.ui.theme.getStatusColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,6 +66,9 @@ fun SellerDashboardScreen(
                 Text("Bienvenido, ${uiState.userName}", fontSize = 22.sp, fontWeight = FontWeight.Bold)
                 Text("Rol: Vendedor", fontSize = 14.sp, color = Color.Gray)
                 Spacer(modifier = Modifier.height(4.dp))
+                uiState.error?.let { error ->
+                    Text("Error: $error", color = Color.Red, fontSize = 14.sp)
+                }
             }
 
             item {
@@ -269,7 +264,7 @@ fun StatusCard(
 
 @Composable
 fun OrderCard(order: RecentOrderUi, onClick: () -> Unit) {
-    val color = statusColor(order.status)
+    val color = getStatusColor(order.status)
     Card(
         modifier = Modifier.fillMaxWidth().clickable { onClick() },
         shape = RoundedCornerShape(10.dp),
@@ -281,9 +276,8 @@ fun OrderCard(order: RecentOrderUi, onClick: () -> Unit) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column {
-                Text("Pedido #${order.id}", fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
-                Text(order.clientName, fontSize = 13.sp, color = Color.Gray)
-                Text(order.date, fontSize = 12.sp, color = Color.LightGray)
+                Text(order.clientName, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                Text(order.date, fontSize = 12.sp, color = Color.Gray)
             }
             Column(horizontalAlignment = Alignment.End) {
                 Text("\$${order.total.toInt()}", fontWeight = FontWeight.Bold, fontSize = 15.sp)

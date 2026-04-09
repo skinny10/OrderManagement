@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,13 +13,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.skinny.ordermanagement.features.seller.presentation.components.OrderCard
 import com.skinny.ordermanagement.features.seller.presentation.viewmodels.SellerOrdersViewModel
+
+// Color PrimaryBlue
+private val SELLER_PRIMARY_COLOR = androidx.compose.ui.graphics.Color(0xFF5C6BC0)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SellerOrdersScreen(
     onBack: () -> Unit,
-    onOrderClick: (Int) -> Unit,
+    onOrderClick: (String) -> Unit,
     onCreateOrder: () -> Unit,
     viewModel: SellerOrdersViewModel = hiltViewModel()
 ) {
@@ -32,17 +36,17 @@ fun SellerOrdersScreen(
             TopAppBar(
                 title = { Text("Pedidos") },
                 navigationIcon = {
-                    IconButton(onClick = onBack) { Icon(Icons.Default.ArrowBack, null) }
+                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, null) }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = PrimaryBlue,
+                    containerColor = SELLER_PRIMARY_COLOR,
                     titleContentColor = Color.White,
                     navigationIconContentColor = Color.White
                 )
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onCreateOrder, containerColor = PrimaryBlue) {
+            FloatingActionButton(onClick = onCreateOrder, containerColor = SELLER_PRIMARY_COLOR) {
                 Icon(Icons.Default.Add, null, tint = Color.White)
             }
         }

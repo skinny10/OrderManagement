@@ -191,7 +191,7 @@ fun AdminDashboardScreen(
                 AdminOrderCard(order = order, onClick = {})
             }
 
-            // Acciones Rápidas
+            
             item {
                 Spacer(Modifier.height(4.dp))
                 Text("Acciones Rápidas", fontWeight = FontWeight.SemiBold, fontSize = 16.sp)
@@ -333,7 +333,7 @@ fun AdminOrderCard(order: AdminOrderUi, onClick: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Eliminado el id del pedido
+                
                 Surface(color = color.copy(alpha = 0.15f), shape = RoundedCornerShape(20.dp)) {
                     Text(
                         order.status,
@@ -357,3 +357,4 @@ fun AdminOrderCard(order: AdminOrderUi, onClick: () -> Unit) {
         }
     }
 }
+

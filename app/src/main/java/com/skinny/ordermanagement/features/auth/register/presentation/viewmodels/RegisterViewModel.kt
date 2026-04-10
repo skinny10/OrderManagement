@@ -63,3 +63,4 @@ class RegisterViewModel @Inject constructor(
         _uiState.value = RegisterUiState.Idle
     }
 }
+

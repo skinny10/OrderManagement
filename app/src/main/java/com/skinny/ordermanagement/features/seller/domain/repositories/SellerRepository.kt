@@ -14,5 +14,7 @@ interface SellerRepository {
     ): Result<SellerClient>
     suspend fun deleteClient(clientId: String): Result<Unit>
     suspend fun getOrders(): Result<List<SellerOrder>>
-    suspend fun createOrder(clientId: String, total: Double): Result<Unit>
+    suspend fun createOrder(clientId: String, total: Double, items: List<Any> = emptyList()): Result<Unit>
 }
+
+

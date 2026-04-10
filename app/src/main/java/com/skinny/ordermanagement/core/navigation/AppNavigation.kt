@@ -8,3 +8,4 @@ fun AppNavigation() {
     val navController = rememberNavController()
     NavGraph(navController = navController)
 }
+

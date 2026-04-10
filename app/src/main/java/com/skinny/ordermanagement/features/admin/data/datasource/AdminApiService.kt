@@ -16,11 +16,11 @@ import retrofit2.http.Path
 
 interface AdminApiService {
 
-    // 👇 Dashboard
+    
     @GET("admin/dashboard")
     suspend fun getDashboard(): Response<AdminDashboardResponse>
 
-    // 👇 Usuarios
+    
     @GET("admin/users")
     suspend fun getUsers(): Response<List<AdminUserResponse>>
 
@@ -30,14 +30,15 @@ interface AdminApiService {
     @DELETE("admin/users/{id}")
     suspend fun deleteUser(@Path("id") userId: String): Response<DeleteResponse>
 
-    // 👇 Pedidos
+    
     @GET("admin/orders")
     suspend fun getOrders(): Response<List<AdminOrderResponse>>
 
-    @DELETE("orders/{id}")
+    @DELETE("admin/orders/{id}")
     suspend fun deleteOrder(@Path("id") orderId: String): Response<DeleteResponse>
 
-    // 👇 Clientes
+    
     @GET("admin/clients")
     suspend fun getClients(): Response<List<AdminClientResponse>>
 }
+

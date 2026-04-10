@@ -175,3 +175,4 @@ fun InfoRow(icon: ImageVector, text: String) {
         Text(text, fontSize = 14.sp)
     }
 }
+

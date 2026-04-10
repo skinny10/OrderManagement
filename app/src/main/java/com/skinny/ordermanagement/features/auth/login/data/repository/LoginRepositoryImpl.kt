@@ -26,4 +26,19 @@ class LoginRepositoryImpl @Inject constructor(
             Result.failure(Exception("Error inesperado: ${e.message}"))
         }
     }
+
+    override suspend fun updateFcmToken(
+        token: String,
+        fcmToken: String
+    ): Result<Unit> {
+        return try {
+            remoteDataSource.updateFcmToken(token, fcmToken)
+            Result.success(Unit)
+        } catch (e: IOException) {
+            Result.failure(Exception("Sin conexión a internet"))
+        } catch (e: Exception) {
+            Result.failure(Exception("Error inesperado: ${e.message}"))
+        }
+    }
 }
+

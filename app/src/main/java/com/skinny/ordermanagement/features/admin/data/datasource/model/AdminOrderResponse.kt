@@ -11,3 +11,4 @@ data class AdminOrderResponse(
     @SerializedName("status")       val status: String,
     @SerializedName("date")         val date: String
 )
+

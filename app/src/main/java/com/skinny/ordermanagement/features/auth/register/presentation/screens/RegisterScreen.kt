@@ -45,7 +45,7 @@ import com.skinny.ordermanagement.features.auth.register.presentation.components
 import com.skinny.ordermanagement.features.auth.register.presentation.viewmodels.RegisterUiState
 import com.skinny.ordermanagement.features.auth.register.presentation.viewmodels.RegisterViewModel
 
-// 🎨 Paleta de colores azul vivo
+
 val BluePrimary    = Color(0xFF1565C0)
 val BlueLight      = Color(0xFF42A5F5)
 val BlueAccent     = Color(0xFF0288D1)
@@ -225,7 +225,7 @@ fun RegisterScreen(
 
             Spacer(modifier = Modifier.height(28.dp))
 
-// dirigir al login
+
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
@@ -257,3 +257,4 @@ fun RegisterScreen(
         }
     }
 }
+

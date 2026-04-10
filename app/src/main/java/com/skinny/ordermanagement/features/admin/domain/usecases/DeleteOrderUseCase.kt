@@ -10,3 +10,4 @@ class DeleteOrderUseCase @Inject constructor(
         return repository.deleteOrder(orderId)
     }
 }
+

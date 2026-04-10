@@ -50,6 +50,8 @@ class GetSellerOrdersUseCase @Inject constructor(
 class CreateOrderUseCase @Inject constructor(
     private val repository: SellerRepository
 ) {
-    suspend operator fun invoke(clientId: String, total: Double) =
-        repository.createOrder(clientId, total)
+    suspend operator fun invoke(clientId: String, total: Double, items: List<Any> = emptyList()) =
+        repository.createOrder(clientId, total, items)
 }
+
+

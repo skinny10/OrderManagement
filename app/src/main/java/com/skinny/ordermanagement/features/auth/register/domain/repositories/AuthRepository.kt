@@ -10,3 +10,4 @@ interface AuthRepository {
         password: String
     ): Result<RegisterResponse>
 }
+

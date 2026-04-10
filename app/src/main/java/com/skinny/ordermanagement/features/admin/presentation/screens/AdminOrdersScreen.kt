@@ -52,7 +52,7 @@ fun AdminOrdersScreen(
     ) { padding ->
         Column(Modifier.fillMaxSize().padding(padding)) {
 
-            // Filtros por estado
+            
             LazyRow(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -109,7 +109,7 @@ fun AdminOrderCardWithDelete(order: AdminOrderUi, onDelete: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // Eliminado el id del pedido
+                
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Surface(color = color.copy(alpha = 0.15f), shape = RoundedCornerShape(20.dp)) {
                         Text(
@@ -159,3 +159,4 @@ fun AdminOrderCardWithDelete(order: AdminOrderUi, onDelete: () -> Unit) {
         )
     }
 }
+

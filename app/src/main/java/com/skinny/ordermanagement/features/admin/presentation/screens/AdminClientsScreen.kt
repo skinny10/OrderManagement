@@ -17,10 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.skinny.ordermanagement.ui.theme.AdminBlue
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.skinny.ordermanagement.features.admin.presentation.viewmodels.AdminClientsUiState
 import com.skinny.ordermanagement.features.admin.presentation.viewmodels.AdminClientsViewModel
 import com.skinny.ordermanagement.features.admin.presentation.viewmodels.AdminClientUi
-import com.skinny.ordermanagement.ui.theme.PrimaryBlue
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -63,7 +61,7 @@ fun AdminClientsScreen(
                         .padding(horizontal = 16.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    items(uiState.clients) { client ->
+                    items(uiState.clients, key = { it.id }) { client ->
                         AdminClientCard(client = client)
                     }
                 }
@@ -88,8 +86,10 @@ fun AdminClientCard(client: AdminClientUi) {
                 color = AdminBlue.copy(alpha = 0.15f)
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text(client.name.first().toString(),
-                        fontWeight = FontWeight.Bold, color = AdminBlue, fontSize = 18.sp)
+                    Text(
+                        if (client.name.isNotEmpty()) client.name.first().toString() else "?",
+                        fontWeight = FontWeight.Bold, color = AdminBlue, fontSize = 18.sp
+                    )
                 }
             }
             Spacer(Modifier.width(12.dp))
@@ -111,3 +111,5 @@ fun AdminClientCard(client: AdminClientUi) {
         }
     }
 }
+
+

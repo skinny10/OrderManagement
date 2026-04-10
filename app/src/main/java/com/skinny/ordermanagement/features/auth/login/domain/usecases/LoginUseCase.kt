@@ -23,3 +23,4 @@ class LoginUseCase @Inject constructor(
         return loginRepository.login(email, password)
     }
 }
+

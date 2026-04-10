@@ -29,3 +29,4 @@ class RegisterUseCase @Inject constructor(
         return authRepository.register(name, lastName, email, password)
     }
 }
+

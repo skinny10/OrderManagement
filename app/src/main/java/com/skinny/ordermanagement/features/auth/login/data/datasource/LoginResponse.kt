@@ -8,3 +8,4 @@ data class LoginResponse(
     @SerializedName("token")   val token: String? = null,
     @SerializedName("role")    val role: String? = null
 )
+

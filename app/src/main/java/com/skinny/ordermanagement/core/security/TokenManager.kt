@@ -21,11 +21,14 @@ class TokenManager @Inject constructor(
         masterKey,
         EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+
     )
 
     companion object {
         private const val KEY_TOKEN = "auth_token"
         private const val KEY_ROLE  = "user_role"
+        private const val KEY_FCM   = "fcm_token"
+
     }
 
     fun saveToken(token: String) {
@@ -51,4 +54,13 @@ class TokenManager @Inject constructor(
     fun isLoggedIn(): Boolean {
         return getToken() != null
     }
+
+    fun saveFcmToken(token: String) {
+        prefs.edit().putString(KEY_FCM, token).apply()
+    }
+
+    fun getFcmToken(): String? {
+        return prefs.getString(KEY_FCM, null)
+    }
 }
+

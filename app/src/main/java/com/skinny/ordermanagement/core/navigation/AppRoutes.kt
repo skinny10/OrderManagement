@@ -22,3 +22,4 @@ sealed class AppRoutes(val route: String) {
         object Home : Delivery("delivery/home")
     }
 }
+

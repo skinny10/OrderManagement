@@ -12,10 +12,10 @@ data class AdminUserResponse(
 
 data class CreateUserRequest(
     @SerializedName("name")      val name: String,
-    @SerializedName("lastName")  val lastName: String,  // 👈 agregado
+    @SerializedName("lastName")  val lastName: String,  
     @SerializedName("role")      val role: String,
     @SerializedName("email")     val email: String,
-    @SerializedName("password")  val password: String   // 👈 agregado
+    @SerializedName("password")  val password: String   
 )
 
 data class CreateUserResponse(
@@ -40,3 +40,5 @@ data class CreateClientResponse(
     @SerializedName("message") val message: String,
     @SerializedName("client")  val client: AdminClientResponse? = null
 )
+
+

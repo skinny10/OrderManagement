@@ -33,7 +33,7 @@ fun DeliveryDashboardScreen(
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
-    // Recargar cada vez que se entra al dashboard
+    
     LaunchedEffect(Unit) { viewModel.loadOrders() }
 
     val pending   = uiState.orders.count { it.status == "Pendiente" }
@@ -108,3 +108,4 @@ fun DeliveryStatusCard(modifier: Modifier, label: String, count: Int, color: Col
         }
     }
 }
+

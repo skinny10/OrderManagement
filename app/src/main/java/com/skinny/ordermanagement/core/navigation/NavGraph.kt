@@ -28,7 +28,7 @@ fun NavGraph(navController: NavHostController) {
         startDestination = AppRoutes.Auth.Login.route
     ) {
 
-        // 👇 Login
+        
         composable(route = AppRoutes.Auth.Login.route) {
             LoginScreen(
                 onLoginSuccess = { role ->
@@ -50,7 +50,7 @@ fun NavGraph(navController: NavHostController) {
             )
         }
 
-        // 👇 Register
+        
         composable(route = AppRoutes.Auth.Register.route) {
             RegisterScreen(
                 onRegisterSuccess = {
@@ -64,7 +64,7 @@ fun NavGraph(navController: NavHostController) {
             )
         }
 
-        // 👇 Admin Dashboard — con Drawer
+        
         composable(route = AppRoutes.Admin.Dashboard.route) {
             ModalNavigationDrawer(
                 drawerState   = drawerState,
@@ -96,34 +96,35 @@ fun NavGraph(navController: NavHostController) {
             }
         }
 
-        // 👇 Admin Orders
+        
         composable(route = AppRoutes.Admin.Orders.route) {
             AdminOrdersScreen(
                 onBack = { navController.popBackStack() }
             )
         }
 
-        // 👇 Admin Users
+        
         composable(route = AppRoutes.Admin.Users.route) {
             AdminUsersScreen(
                 onBack = { navController.popBackStack() }
             )
         }
 
-        // 👇 Admin Clients
+        
         composable(route = AppRoutes.Admin.Clients.route) {
             AdminClientsScreen(
                 onBack = { navController.popBackStack() }
             )
         }
 
-        // 👇 Seller y Delivery — pendientes
+        
         composable(route = AppRoutes.Seller.Home.route) {
-            // TODO: SellerHomeScreen()
+            
         }
 
         composable(route = AppRoutes.Delivery.Home.route) {
-            // TODO: DeliveryHomeScreen()
+            
         }
     }
 }
+

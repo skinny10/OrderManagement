@@ -10,11 +10,21 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.google.firebase.messaging.FirebaseMessaging
+import com.skinny.ordermanagement.features.auth.login.domain.repositories.LoginRepository
+import androidx.work.WorkManager
+import androidx.work.ExistingPeriodicWorkPolicy
+import com.skinny.ordermanagement.core.work.SyncWorker
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    private val loginRepository: LoginRepository,
+    @ApplicationContext private val context: Context
+
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
@@ -42,10 +52,29 @@ class LoginViewModel @Inject constructor(
                 onSuccess = { response ->
                     response.token?.let { tokenManager.saveToken(it) }
                     response.role?.let { tokenManager.saveRole(it) }
+
+                    
+                    FirebaseMessaging.getInstance().token.addOnSuccessListener { fcmToken ->
+                        tokenManager.saveFcmToken(fcmToken)
+
+                        
+                        viewModelScope.launch {
+                            response.token?.let { authToken ->
+                                loginRepository.updateFcmToken(
+                                    token = authToken,
+                                    fcmToken = fcmToken
+                                )
+                            }
+                        }
+                    }
+
                     _uiState.value = LoginUiState.Success(
                         message = response.message,
                         role = response.role
                     )
+
+                    // Programar sincronización en segundo plano
+                    scheduleSyncWork()
                 },
                 onFailure = { exception ->
                     _uiState.value = LoginUiState.Error(
@@ -54,6 +83,16 @@ class LoginViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    private fun scheduleSyncWork() {
+        val workManager = WorkManager.getInstance(context)
+        val syncWorkRequest = SyncWorker.createWorkRequest()
+        workManager.enqueueUniquePeriodicWork(
+            "sync_work",
+            ExistingPeriodicWorkPolicy.REPLACE,
+            syncWorkRequest
+        )
     }
 
     fun resetState() {

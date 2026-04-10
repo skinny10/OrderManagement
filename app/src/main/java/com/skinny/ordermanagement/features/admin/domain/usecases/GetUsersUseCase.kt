@@ -11,3 +11,4 @@ class GetUsersUseCase @Inject constructor(
         return repository.getUsers()
     }
 }
+

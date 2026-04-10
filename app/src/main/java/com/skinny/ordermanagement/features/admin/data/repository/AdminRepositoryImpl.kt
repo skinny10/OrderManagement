@@ -102,3 +102,5 @@ private fun AdminClientResponse.toEntity() = AdminClient(
     address     = address,
     totalOrders = totalOrders
 )
+
+

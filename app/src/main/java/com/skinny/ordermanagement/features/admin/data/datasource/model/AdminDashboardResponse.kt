@@ -14,3 +14,4 @@ data class AdminDashboardResponse(
     @SerializedName("totalRevenue")    val totalRevenue: Double,
     @SerializedName("recentOrders")    val recentOrders: List<AdminOrderResponse>
 )
+

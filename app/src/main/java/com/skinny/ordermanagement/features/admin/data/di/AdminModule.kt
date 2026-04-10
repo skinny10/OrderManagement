@@ -38,3 +38,4 @@ object AdminModule {
         return AdminRepositoryImpl(remoteDataSource)
     }
 }
+

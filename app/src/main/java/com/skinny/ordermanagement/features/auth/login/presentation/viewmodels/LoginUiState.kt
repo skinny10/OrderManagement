@@ -6,3 +6,4 @@ sealed class LoginUiState {
     data class Success(val message: String, val role: String?) : LoginUiState()
     data class Error(val message: String) : LoginUiState()
 }
+

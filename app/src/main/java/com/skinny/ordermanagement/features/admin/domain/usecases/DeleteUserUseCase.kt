@@ -10,3 +10,4 @@ class DeleteUserUseCase @Inject constructor(
         return repository.deleteUser(userId)
     }
 }
+

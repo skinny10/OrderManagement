@@ -1,15 +1,19 @@
 package com.skinny.ordermanagement
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.core.content.ContextCompat
 import com.skinny.ordermanagement.core.security.TokenManager
 import com.skinny.ordermanagement.features.auth.login.presentation.screens.LoginScreen
 import com.skinny.ordermanagement.features.auth.register.presentation.screens.RegisterScreen
@@ -26,10 +30,21 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var tokenManager: TokenManager
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            android.util.Log.d("FCM", "Permiso de notificaciones concedido")
+        } else {
+            android.util.Log.d("FCM", "Permiso de notificaciones denegado")
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        tokenManager.clearSession()  // Clear token to always start with auth
+        solicitarPermisoNotificaciones()
+        tokenManager.clearSession()
         setContent {
             OrderManagementTheme {
                 Surface(
@@ -55,7 +70,7 @@ class MainActivity : ComponentActivity() {
                             else -> AdminNavGraph(onLogout = {
                                 tokenManager.clearSession()
                                 isLoggedIn = false
-                            }) // Default to admin for testing
+                            })
                         }
                     } else {
                         var currentScreen by remember { mutableStateOf("login") }
@@ -82,4 +97,21 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    private fun solicitarPermisoNotificaciones() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when {
+                ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    android.util.Log.d("FCM", "Permiso ya concedido")
+                }
+                else -> {
+                    requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+            }
+        }
+    }
 }
+

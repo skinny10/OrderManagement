@@ -92,3 +92,4 @@ private fun com.skinny.ordermanagement.features.admin.domain.entities.AdminUser.
     email        = email,
     activeOrders = activeOrders
 )
+

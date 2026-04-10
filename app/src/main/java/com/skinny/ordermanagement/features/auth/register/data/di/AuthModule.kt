@@ -38,3 +38,4 @@ object AuthModule {
         return AuthRepositoryImpl(remoteDataSource)
     }
 }
+

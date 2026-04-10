@@ -68,7 +68,7 @@ fun AdminUsersScreen(
                 .padding(horizontal = 16.dp, vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            // Sección Vendedores
+            
             val sellers    = uiState.users.filter { it.role == "Vendedor" }
             val deliveries = uiState.users.filter { it.role == "Repartidor" }
 
@@ -286,3 +286,5 @@ fun AddUserDialog(onDismiss: () -> Unit, onSave: (String, String, String, String
         }
     }
 }
+
+

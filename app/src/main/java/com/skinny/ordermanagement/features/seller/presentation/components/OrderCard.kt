@@ -38,7 +38,7 @@ fun OrderCard(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Header with status
+            
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,
@@ -61,21 +61,21 @@ fun OrderCard(
                 }
             }
 
-            // Client name
+            
             Text(
                 text = "Cliente: ${order.clientName}",
                 fontSize = 14.sp,
                 color = Color.Gray
             )
 
-            // Date
+            
             Text(
                 text = "Fecha: ${order.date}",
                 fontSize = 13.sp,
                 color = Color.Gray
             )
 
-            // Total
+            
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -99,3 +99,5 @@ fun OrderCard(
         }
     }
 }
+
+

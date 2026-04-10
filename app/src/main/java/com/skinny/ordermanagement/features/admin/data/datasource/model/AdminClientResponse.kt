@@ -9,3 +9,4 @@ data class AdminClientResponse(
     @SerializedName("address")     val address: String,
     @SerializedName("totalOrders") val totalOrders: Int = 0
 )
+

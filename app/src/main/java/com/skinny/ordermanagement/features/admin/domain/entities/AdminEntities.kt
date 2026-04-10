@@ -38,3 +38,4 @@ data class AdminDashboard(
     val totalRevenue: Double,
     val recentOrders: List<AdminOrder>
 )
+

@@ -47,7 +47,7 @@ fun AdminDrawer(
             .width(280.dp)
             .background(Color.White)
     ) {
-        // 👇 Header con gradiente
+        
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -88,7 +88,7 @@ fun AdminDrawer(
 
         Spacer(Modifier.height(8.dp))
 
-        // 👇 Items de navegación
+        
         AdminDrawerItem(
             icon  = Icons.Default.Dashboard,
             label = "Dashboard",
@@ -113,7 +113,7 @@ fun AdminDrawer(
         Spacer(Modifier.weight(1f))
         Divider()
 
-        // 👇 Cerrar sesión
+        
         AdminDrawerItem(
             icon    = Icons.Default.ExitToApp,
             label   = "Cerrar sesión",
@@ -154,3 +154,4 @@ private fun AdminDrawerItem(
         )
     }
 }
+

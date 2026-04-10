@@ -1,5 +1,8 @@
 package com.skinny.ordermanagement.features.delivery.presentation.screens
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,12 +31,23 @@ fun DeliveryOrderDetailScreen(
     val uiState by viewModel.uiState.collectAsState()
     val order = uiState.orders.find { it.id == orderId }
 
+    val statusMap = mapOf(
+        "Pendiente" to "pending",
+        "Preparando" to "preparing",
+        "En camino" to "onWay",
+        "Entregado" to "delivered"
+    )
+
     var selectedStatus by remember(order?.status) { mutableStateOf(order?.status ?: "Pendiente") }
     var savedStatus    by remember(order?.status) { mutableStateOf(order?.status ?: "Pendiente") }
     var expanded       by remember { mutableStateOf(false) }
 
     val statusChanged = selectedStatus != savedStatus
-    val statusOptions = listOf("Pendiente", "Preparando", "En camino", "Entregado")
+    val statusOptions = statusMap.keys.toList()
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { }
 
     LaunchedEffect(Unit) { viewModel.loadOrders() }
 
@@ -155,7 +169,9 @@ fun DeliveryOrderDetailScreen(
                                 trailingIcon = {
                                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded)
                                 },
-                                modifier = Modifier.fillMaxWidth().menuAnchor()
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .menuAnchor()
                             )
                             ExposedDropdownMenu(
                                 expanded = expanded,
@@ -209,8 +225,7 @@ fun DeliveryOrderDetailScreen(
 
                         Button(
                             onClick = {
-                                // Actualiza el repositorio compartido — se refleja en Dashboard y lista
-                                viewModel.updateOrderStatus(orderId, selectedStatus)
+                                viewModel.updateOrderStatus(orderId, statusMap[selectedStatus] ?: selectedStatus)
                                 savedStatus = selectedStatus
                             },
                             modifier = Modifier.fillMaxWidth(),
@@ -229,6 +244,81 @@ fun DeliveryOrderDetailScreen(
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
+
+                        Spacer(Modifier.height(10.dp))
+                        HorizontalDivider()
+                        Spacer(Modifier.height(10.dp))
+
+                        uiState.voiceResult?.let {
+                            Surface(
+                                color = Color(0xFFD4EDDA),
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    it,
+                                    Modifier.padding(10.dp),
+                                    color = Color(0xFF155724),
+                                    fontSize = 13.sp
+                                )
+                            }
+                            Spacer(Modifier.height(8.dp))
+                        }
+
+                        uiState.voiceError?.let {
+                            Surface(
+                                color = Color(0xFFF8D7DA),
+                                shape = RoundedCornerShape(8.dp),
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Text(
+                                    it,
+                                    Modifier.padding(10.dp),
+                                    color = Color(0xFF721C24),
+                                    fontSize = 13.sp
+                                )
+                            }
+                            Spacer(Modifier.height(8.dp))
+                        }
+
+                        Button(
+                            onClick = {
+                                permissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                                viewModel.clearVoiceResult()
+                                viewModel.startListening(orderId) { detectedStatus ->
+                                    selectedStatus = detectedStatus
+                                    savedStatus = detectedStatus
+                                    viewModel.updateOrderStatus(orderId, statusMap[detectedStatus] ?: detectedStatus)
+                                }
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = if (uiState.isListening) Color.Red
+                                else Color(0xFF6C757D)
+                            ),
+                            shape = RoundedCornerShape(8.dp)
+                        ) {
+                            Icon(
+                                if (uiState.isListening) Icons.Default.MicOff
+                                else Icons.Default.Mic,
+                                null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(Modifier.width(8.dp))
+                            Text(
+                                if (uiState.isListening) "Escuchando..."
+                                else "Comando de voz",
+                                modifier = Modifier.padding(vertical = 4.dp),
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+
+                        Text(
+                            "Di: \"pendiente\", \"preparando\", \"en camino\" o \"entregado\"",
+                            fontSize = 11.sp,
+                            color = Color.Gray,
+                            modifier = Modifier.padding(top = 6.dp)
+                        )
                     }
                 }
             }

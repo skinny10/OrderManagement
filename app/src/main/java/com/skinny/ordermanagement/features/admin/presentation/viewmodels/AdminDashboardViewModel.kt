@@ -23,7 +23,7 @@ data class AdminDashboardUiState(
     val deliveredOrders: Int = 0,
     val totalRevenue: Double = 0.0,
     val recentOrders: List<AdminOrderUi> = emptyList(),
-    // Category sheet
+    
     val showSheet: Boolean = false,
     val sheetTitle: String = "",
     val sheetOrders: List<AdminOrderUi> = emptyList(),
@@ -109,3 +109,4 @@ class AdminDashboardViewModel @Inject constructor(
 
     fun closeSheet() { _uiState.value = _uiState.value.copy(showSheet = false) }
 }
+

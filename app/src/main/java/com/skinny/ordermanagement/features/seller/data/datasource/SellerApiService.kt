@@ -34,3 +34,5 @@ interface SellerApiService {
     @POST("orders")
     suspend fun createOrder(@Body request: CreateOrderRequest): Response<Unit>
 }
+
+

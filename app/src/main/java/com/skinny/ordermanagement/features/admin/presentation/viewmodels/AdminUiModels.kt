@@ -23,7 +23,7 @@ data class AdminClientUi(
 data class AdminUserUi(
     val id: String,
     val name: String,
-    val role: String,   // "Vendedor" | "Repartidor"
+    val role: String,   
     val email: String,
     val activeOrders: Int,
     val password: String = ""
@@ -48,3 +48,4 @@ val adminUsersRepo = mutableListOf(
     AdminUserUi("2", "Luis Repartidor", "Repartidor",  "luis@mail.com",  2, "password123")
 )
 var nextAdminUserId = 3
+

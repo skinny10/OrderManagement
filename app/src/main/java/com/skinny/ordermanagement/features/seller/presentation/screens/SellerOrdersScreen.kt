@@ -16,7 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.skinny.ordermanagement.features.seller.presentation.components.OrderCard
 import com.skinny.ordermanagement.features.seller.presentation.viewmodels.SellerOrdersViewModel
 
-// Color PrimaryBlue
+
 private val SELLER_PRIMARY_COLOR = androidx.compose.ui.graphics.Color(0xFF5C6BC0)
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -68,3 +68,4 @@ fun SellerOrdersScreen(
         }
     }
 }
+

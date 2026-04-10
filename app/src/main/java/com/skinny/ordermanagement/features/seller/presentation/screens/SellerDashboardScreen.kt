@@ -35,7 +35,7 @@ fun SellerDashboardScreen(
     val uiState by viewModel.uiState.collectAsState()
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    // Refrescar al entrar a la pantalla
+    
     LaunchedEffect(Unit) { viewModel.loadDashboard() }
 
     Scaffold(
@@ -293,3 +293,4 @@ fun OrderCard(order: RecentOrderUi, onClick: () -> Unit) {
         }
     }
 }
+

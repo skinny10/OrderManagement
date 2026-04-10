@@ -142,7 +142,7 @@ fun CreateOrderScreen(
                 }
             }
 
-            // ── Sección productos ──────────────────────────────────────────
+            
             item {
                 OrderSectionCard(title = "2. Agrega Productos") {
                     uiState.products.forEach { product ->
@@ -192,7 +192,7 @@ fun CreateOrderScreen(
                 }
             }
 
-            // ── Resumen ────────────────────────────────────────────────────
+            
             if (uiState.cartItems.isNotEmpty()) {
                 item {
                     OrderSectionCard(title = "Resumen del Pedido") {
@@ -234,3 +234,4 @@ fun OrderSectionCard(title: String, content: @Composable ColumnScope.() -> Unit)
         }
     }
 }
+

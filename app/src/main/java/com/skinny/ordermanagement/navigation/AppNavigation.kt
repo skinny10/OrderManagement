@@ -23,6 +23,7 @@ import com.skinny.ordermanagement.features.delivery.presentation.screens.*
 import com.skinny.ordermanagement.features.seller.presentation.screens.*
 import com.skinny.ordermanagement.features.admin.presentation.screens.AdminDashboardScreen
 import com.skinny.ordermanagement.features.admin.presentation.screens.AdminOrdersScreen
+import com.skinny.ordermanagement.features.admin.presentation.screens.AdminClientsScreen
 import com.skinny.ordermanagement.features.admin.presentation.screens.AdminUsersScreen
 import kotlinx.coroutines.launch
 
@@ -234,6 +235,9 @@ fun AdminNavGraph(onLogout: () -> Unit) {
             composable(ADMIN_ORDERS) {
                 AdminOrdersScreen(onBack = { navController.popBackStack() })
             }
+            composable(ADMIN_CLIENTS) {
+                AdminClientsScreen(onBack = { navController.popBackStack() })
+            }
             composable(ADMIN_USERS) {
                 AdminUsersScreen(onBack = { navController.popBackStack() })
             }
@@ -332,3 +336,4 @@ fun AppDrawerContent(
         }
     }
 }
+

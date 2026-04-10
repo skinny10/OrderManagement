@@ -17,7 +17,7 @@ interface SellerRemoteDataSource {
     ): SellerClientResponse
     suspend fun deleteClient(clientId: String)
     suspend fun getOrders(): List<SellerOrderResponse>
-    suspend fun createOrder(clientId: String, total: Double)
+    suspend fun createOrder(clientId: String, total: Double, items: List<Any> = emptyList())
 }
 
 class SellerRemoteDataSourceImpl @Inject constructor(
@@ -67,8 +67,8 @@ class SellerRemoteDataSourceImpl @Inject constructor(
         throw Exception("Error del servidor: ${response.code()}")
     }
 
-    override suspend fun createOrder(clientId: String, total: Double) {
-        val response = apiService.createOrder(CreateOrderRequest(clientId, total))
+    override suspend fun createOrder(clientId: String, total: Double, items: List<Any>) {
+        val response = apiService.createOrder(CreateOrderRequest(clientId, total, items))
         if (!response.isSuccessful) throw Exception("Error al crear orden: ${response.code()}")
     }
 }

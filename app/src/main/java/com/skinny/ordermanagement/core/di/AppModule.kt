@@ -1,9 +1,12 @@
 package com.skinny.ordermanagement.core.di
 
+import android.content.Context
+import androidx.work.WorkManager
 import com.skinny.ordermanagement.core.network.AuthInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -43,9 +46,15 @@ object AppModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:3000/api/")
+            .baseUrl("http://192.168.1.39:3000/api/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
+        return WorkManager.getInstance(context)
     }
 }

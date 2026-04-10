@@ -11,3 +11,4 @@ class GetDashboardUseCase @Inject constructor(
         return repository.getDashboard()
     }
 }
+

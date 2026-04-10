@@ -50,8 +50,8 @@ class SellerRepositoryImpl @Inject constructor(
         remoteDataSource.getOrders().map { it.toEntity() }
     }
 
-    override suspend fun createOrder(clientId: String, total: Double): Result<Unit> = safeCall {
-        remoteDataSource.createOrder(clientId, total)
+    override suspend fun createOrder(clientId: String, total: Double, items: List<Any>): Result<Unit> = safeCall {
+        remoteDataSource.createOrder(clientId, total, items)
     }
 
     private suspend fun <T> safeCall(call: suspend () -> T): Result<T> {
@@ -83,3 +83,5 @@ private fun SellerOrderResponse.toEntity() = SellerOrder(
     status     = status,
     date       = date
 )
+
+
